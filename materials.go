@@ -18,5 +18,5 @@ func main() {
 	fmt.Println(*address)
 
 	makeTables(*user, *pass, *address, *database)
-
+	generateRecipes(*user, *pass, *address, *database)
 }
