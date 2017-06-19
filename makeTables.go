@@ -40,6 +40,7 @@ func makeTables(user string, password string, address string, database string) {
 
 		}
 	}
+	recipeChk.Close()
 	materialsChk, err := db.Query("Select COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'gw2' AND TABLE_NAME = 'materials'")
 	if err != nil {
 		fmt.Println("Error", err)
@@ -52,7 +53,7 @@ func makeTables(user string, password string, address string, database string) {
 			err = materialsChk.Scan(&count)
 			if count == 0 {
 				fmt.Println("make materials table")
-				makeMaterialsTbl, err := db.Query("CREATE TABLE `" + database + "`.`materials` ( `id` INT NOT NULL , `name` TEXT, `sell price` INT, `buy_price` INT, PRIMARY KEY (`id`))")
+				makeMaterialsTbl, err := db.Query("CREATE TABLE `" + database + "`.`materials` ( `id` INT NOT NULL , `sell price` INT, `buy_price` INT, PRIMARY KEY (`id`))")
 				if err != nil {
 					fmt.Println("error ", err)
 				} else {
@@ -63,5 +64,29 @@ func makeTables(user string, password string, address string, database string) {
 			}
 		}
 	}
-
+	materialsChk.Close()
+	itemsChk, err := db.Query("Select COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'gw2' AND TABLE_NAME = 'items'")
+	if err != nil {
+		fmt.Println("Error", err)
+	} else {
+		fmt.Println("gotanswer ")
+		for itemsChk.Next() {
+			var (
+				count int64
+			)
+			err = itemsChk.Scan(&count)
+			if count == 0 {
+				fmt.Println("make materials table")
+				makeItemsTbl, err := db.Query("CREATE TABLE `" + database + "`.`items` ( `id` INT NOT NULL , `name` TEXT, PRIMARY KEY (`id`))")
+				if err != nil {
+					fmt.Println("error ", err)
+				} else {
+					fmt.Println(makeItemsTbl)
+				}
+			} else {
+				fmt.Println("items table exists")
+			}
+		}
+	}
+	itemsChk.Close()
 }
