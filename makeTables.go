@@ -7,13 +7,13 @@ import (
 	//"os"
 )
 
-func makeTables(user string, password string, address string, database string) {
+func makeTables(db *sql.DB, database string) {
 
-	db, err := sql.Open("mysql", user+":"+password+"@"+address+"/"+database)
+	/*db, err := sql.Open("mysql", user+":"+password+"@"+address+"/"+database)
 	if err != nil {
 		fmt.Println("error", err)
 	}
-	defer db.Close()
+	defer db.Close()*/
 
 	fmt.Println(db.Ping())
 
@@ -33,6 +33,7 @@ func makeTables(user string, password string, address string, database string) {
 					fmt.Println("error ", err)
 				} else {
 					fmt.Println(makeRecipeTbl)
+					makeRecipeTbl.Close()
 				}
 			} else {
 				fmt.Println("recipes table already exists")
@@ -53,11 +54,12 @@ func makeTables(user string, password string, address string, database string) {
 			err = materialsChk.Scan(&count)
 			if count == 0 {
 				fmt.Println("make materials table")
-				makeMaterialsTbl, err := db.Query("CREATE TABLE `" + database + "`.`materials` ( `id` INT NOT NULL , `sell price` INT, `buy_price` INT, PRIMARY KEY (`id`))")
+				makeMaterialsTbl, err := db.Query("CREATE TABLE `" + database + "`.`materials` ( `id` INT NOT NULL , `sell_price` INT, `buy_price` INT, PRIMARY KEY (`id`))")
 				if err != nil {
 					fmt.Println("error ", err)
 				} else {
 					fmt.Println(makeMaterialsTbl)
+					makeMaterialsTbl.Close()
 				}
 			} else {
 				fmt.Println("materials table exists")
@@ -82,6 +84,7 @@ func makeTables(user string, password string, address string, database string) {
 					fmt.Println("error ", err)
 				} else {
 					fmt.Println(makeItemsTbl)
+					makeItemsTbl.Close()
 				}
 			} else {
 				fmt.Println("items table exists")
@@ -89,4 +92,54 @@ func makeTables(user string, password string, address string, database string) {
 		}
 	}
 	itemsChk.Close()
+	tpUpdateChk, err := db.Query("Select COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'gw2' AND TABLE_NAME = 'tp_update'")
+	if err != nil {
+		fmt.Println("Error", err)
+	} else {
+		fmt.Println("gotanswer ")
+		for tpUpdateChk.Next() {
+			var (
+				count int64
+			)
+			err = tpUpdateChk.Scan(&count)
+			if count == 0 {
+				fmt.Println("make materials table")
+				makeTPUpdateTbl, err := db.Query("CREATE TABLE `" + database + "`.`tp_update` ( `id` INT NOT NULL, `last_update` TIMESTAMP NOT NULL )")
+				if err != nil {
+					fmt.Println("error ", err)
+				} else {
+					fmt.Println(makeTPUpdateTbl)
+					makeTPUpdateTbl.Close()
+					firstDate, err := db.Query("INSERT INTO `tp_update` (`last_update`) VALUES ('0000-00-00 00:00:00')")
+					if err != nil {
+						fmt.Println("error", err)
+					} else {
+						firstDate.Close()
+					}
+
+				}
+			} else {
+				fmt.Println("tp_update table exists")
+			}
+		}
+	}
+	tpUpdateChk.Close()
+
+}
+
+func updateTimestamp() {
+
+	db, err := sql.Open("mysql", user+":"+password+"@"+address+"/"+database)
+	if err != nil {
+		fmt.Println("error", err)
+	}
+	defer db.Close()
+
+	updateTStmp, err := db.Query("UPDATE `tp_update` SET `last_update`=CURRENT_TIMESTAMP WHERE `id` = '0'")
+	if err != nil {
+		fmt.Println("error", err)
+	} else {
+		updateTStmp.Close()
+	}
+
 }

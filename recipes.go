@@ -14,15 +14,15 @@ type RecipeDBEntry struct {
 	ID, ItemID, FirstMatID, FirstMatCount, SecondMatID, SecondMatCount, ThirdMatID, ThirdMatCount, FourthMatID, FourthMatCount, AmountMade int
 }
 
-func generateRecipes(user string, password string, address string, database string) {
+func generateRecipes(db *sql.DB) {
 
 	api := gw2api.NewGW2Api()
 
-	db, err := sql.Open("mysql", user+":"+password+"@"+address+"/"+database)
+	/*db, err := sql.Open("mysql", user+":"+password+"@"+address+"/"+database)
 	if err != nil {
 		fmt.Println("error", err)
 	}
-	defer db.Close()
+	defer db.Close()*/
 
 	db.SetMaxIdleConns(0)
 	db.SetMaxOpenConns(150)

@@ -14,15 +14,15 @@ type ItemDBEntry struct {
 	Name string
 }
 
-func generateItemDB(user string, password string, address string, database string) {
+func generateItemDB(db *sql.DB) {
 
 	api := gw2api.NewGW2Api()
 
-	db, err := sql.Open("mysql", user+":"+password+"@"+address+"/"+database)
+	/*db, err := sql.Open("mysql", user+":"+password+"@"+address+"/"+database)
 	if err != nil {
 		fmt.Println("error", err)
 	}
-	defer db.Close()
+	defer db.Close()*/
 
 	item_codes := []int{}
 	uniqueItemIds, err := db.Query("SELECT DISTINCT `recipe` FROM `recipes` WHERE `recipe` != 0 UNION SELECT DISTINCT `mat_1_id` FROM `recipes` WHERE `mat_1_id` != 0 UNION SELECT DISTINCT `mat_2_id` FROM `recipes` WHERE `mat_2_id` != 0 UNION SELECT DISTINCT `mat_3_id` FROM `recipes` WHERE `mat_3_id` != 0 UNION SELECT DISTINCT `mat_4_id` FROM `recipes` WHERE `mat_4_id` != 0")
@@ -82,15 +82,15 @@ func generateItemDB(user string, password string, address string, database strin
 
 }
 
-func generateMaterialIdDb(user string, password string, address string, database string) {
+func generateMaterialIdDb(db *sql.DB) {
 
 	//api := gw2api.NewGW2Api()
 
-	db, err := sql.Open("mysql", user+":"+password+"@"+address+"/"+database)
+	/*db, err := sql.Open("mysql", user+":"+password+"@"+address+"/"+database)
 	if err != nil {
 		fmt.Println("error", err)
 	}
-	defer db.Close()
+	defer db.Close()*/
 	//db.SetMaxIdleConns(0)
 	//db.SetMaxOpenConns(150)
 	//db.SetConnMaxLifetime(0)
