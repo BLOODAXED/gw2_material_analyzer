@@ -28,7 +28,7 @@ func makeTables(db *sql.DB, database string) {
 			err = recipeChk.Scan(&count)
 			if count == 0 {
 				fmt.Println("make recipes table")
-				makeRecipeTbl, err := db.Query("CREATE TABLE `" + database + "`.`recipes` ( `id` INT NOT NULL , `recipe` TEXT NOT NULL , `mat_1_id` INT, `count_1` INT, `mat_2_id` INT, `count_2` INT, `mat_3_id` INT, `count_3` INT, `mat_4_id` INT, `count_4` INT, `amount_created` INT NOT NULL , `individual_sell_price` INT,  `individual_buy_price` INT, `recipe_sell_price` INT, `recipe_buy_price` INT, PRIMARY KEY (`id`))")
+				makeRecipeTbl, err := db.Query("CREATE TABLE `" + database + "`.`recipes` ( `id` INT NOT NULL , `recipe` TEXT NOT NULL ,  `mat_1_id` INT, `count_1` INT, `mat_2_id` INT, `count_2` INT, `mat_3_id` INT, `count_3` INT, `mat_4_id` INT, `count_4` INT, `amount_created` INT NOT NULL , `individual_sell_price` INT,  `individual_buy_price` INT, `recipe_sell_price` INT, `recipe_buy_price` INT, PRIMARY KEY (`id`))")
 				if err != nil {
 					fmt.Println("error ", err)
 				} else {
@@ -127,13 +127,13 @@ func makeTables(db *sql.DB, database string) {
 
 }
 
-func updateTimestamp() {
+func updateTimestamp(db *sql.DB) {
 
-	db, err := sql.Open("mysql", user+":"+password+"@"+address+"/"+database)
-	if err != nil {
-		fmt.Println("error", err)
-	}
-	defer db.Close()
+	//db, err := sql.Open("mysql", user+":"+password+"@"+address+"/"+database)
+	//if err != nil {
+	//	fmt.Println("error", err)
+	//}
+	//defer db.Close()
 
 	updateTStmp, err := db.Query("UPDATE `tp_update` SET `last_update`=CURRENT_TIMESTAMP WHERE `id` = '0'")
 	if err != nil {

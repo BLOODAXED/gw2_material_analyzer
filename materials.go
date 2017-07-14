@@ -32,5 +32,7 @@ func main() {
 		generateMaterialIdDb(db)
 		generateItemDB(db)
 	}
-
+	db.SetMaxOpenConns(125)
+	FetchRecipePrices(db)
+	FetchMaterialPrices(db)
 }
